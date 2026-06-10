@@ -1,23 +1,35 @@
-// ========== DEFAULT CONFIGURATION (Agar URL mein kuch nahi to yeh use hoga) ==========
+// ========== DEFAULT CONFIGURATION ==========
 const DEFAULT_CONFIG = {
     name: "Glamour Lounge",
-    phone: "+92 300 1234567"
+    phone: "+92 300 1234567",
+    location: "Gulberg III, Lahore, Pakistan"
 };
 
-// ========== YE FUNCTION URL SE NAME AUR PHONE READ KAREGA ==========
+// ========== CHECK IF ADMIN MODE (Sirf aap dekh sakte ho) ==========
+const urlParams = new URLSearchParams(window.location.search);
+const isAdmin = urlParams.get('admin') === '1';
+
+// Agar admin mode hai to body mein class add karo
+if(isAdmin) {
+    document.body.classList.add('admin-mode');
+}
+
+// ========== URL SE PARAMETERS READ KARO ==========
 function getURLParameter(name) {
     const urlParams = new URLSearchParams(window.location.search);
     return urlParams.get(name);
 }
 
-// ========== FINAL VALUES - URL SE YA DEFAULT SE ==========
+// ========== FINAL VALUES ==========
 const urlBusinessName = getURLParameter('business');
 const urlPhone = getURLParameter('phone');
+const urlLocation = getURLParameter('location');
 
 const finalBusinessName = urlBusinessName ? decodeURIComponent(urlBusinessName) : DEFAULT_CONFIG.name;
 const finalPhone = urlPhone ? decodeURIComponent(urlPhone) : DEFAULT_CONFIG.phone;
+const finalLocation = urlLocation ? decodeURIComponent(urlLocation) : DEFAULT_CONFIG.location;
 
-// ========== HERO SLIDER IMAGES (.jpg extension) ==========
+// ========== HERO SLIDER IMAGES ==========
 const heroImages = [
     "images/slide1.jpg",
     "images/slide2.jpg", 
@@ -25,7 +37,7 @@ const heroImages = [
     "images/slide4.jpg"
 ];
 
-// ========== MAIN SERVICES (8 services) .jpg ==========
+// ========== MAIN SERVICES ==========
 const servicesData = [
     { img: "images/Body-Spa.jpg", title: "Body Spa", desc: "Relaxing full body treatments" },
     { img: "images/Eyelash.jpg", title: "Eyelash", desc: "Volume lashes & extensions" },
@@ -37,58 +49,57 @@ const servicesData = [
     { img: "images/Vouchers.jpg", title: "Vouchers", desc: "Gift vouchers available" }
 ];
 
-// ========== MAKEUP SERVICES DETAILS .jpg ==========
+// ========== MAKEUP SERVICES ==========
 const makeupServicesData = [
     { img: "images/Bridal-Makeup-Barat.jpg", title: "Bridal Makeup (Baraat)", desc: "Complete bridal look for baraat" },
     { img: "images/Bridal-Makeup-Walima.jpg", title: "Bridal Makeup (Walima)", desc: "Elegant walima look" },
     { img: "images/Mehndi-Makeup.jpg", title: "Mehndi Makeup", desc: "Colorful mehndi event makeup" },
     { img: "images/Nikkah-Engagment-Makeup.jpg", title: "Nikkah/Engagement", desc: "Soft & elegant bridal look" },
     { img: "images/Party-Makeup.jpg", title: "Party Makeup", desc: "Glamorous party look" },
-    { img: "images/function-Makeup.jpg", title: "Royal Bridal Package", desc: "Premium bridal experience" },
-    { img: "images/evening-makeup.jpg", title: "Evening Makeup", desc: "Perfect for formal events" },
-    { img: "images/makeup.jpg", title: "Celebrity Makeup", desc: "Red carpet ready look" }
+    { img: "images/Bridal-Makeup-Barat.jpg", title: "Royal Bridal Package", desc: "Premium bridal experience" },
+    { img: "images/Party-Makeup.jpg", title: "Evening Makeup", desc: "Perfect for formal events" },
+    { img: "images/Mehndi-Makeup.jpg", title: "Celebrity Makeup", desc: "Red carpet ready look" }
 ];
 
-// ========== HAIR SERVICES DETAILS .jpg ==========
+// ========== HAIR SERVICES ==========
 const hairServicesData = [
     { img: "images/Hair-Care.jpg", title: "Hair Care", desc: "Deep conditioning & treatments" },
     { img: "images/Hair-Dye.jpg", title: "Hair Dye", desc: "Professional hair coloring" },
     { img: "images/Hair-Style.jpg", title: "Hair Style", desc: "Trendy cuts & styling" }
 ];
 
-// ========== GALLERY IMAGES .jpg ==========
+// ========== GALLERY IMAGES ==========
 const galleryImages = [
     "images/image.jpg", "images/image1.jpg", "images/image2.jpg", "images/image3.jpg",
     "images/image4.jpg", "images/image5.jpg", "images/image6.jpg", "images/image7.jpg",
     "images/image8.jpg", "images/image9.jpg", "images/image10.jpg", "images/image11.jpg",
-    "images/image12.jpg", "images/image13.jpg", "images/image15.jpg", "images/image14.jpg"
+    "images/image12.jpg", "images/image.jpg", "images/image1.jpg", "images/image2.jpg"
 ];
 
-// ========== YE FUNCTION SARI JAGAH NAME AUR PHONE UPDATE KAREGA ==========
+// ========== UPDATE BUSINESS INFO (Name, Phone, Location) ==========
 function updateBusinessInfo() {
-    // Navbar mein name
-    const businessNameElem = document.getElementById('businessName');
-    if(businessNameElem) businessNameElem.innerText = finalBusinessName;
+    const nameElem = document.getElementById('businessName');
+    if(nameElem) nameElem.innerText = finalBusinessName;
     
-    // Footer mein name
-    const footerBusinessNameElem = document.getElementById('footerBusinessName');
-    if(footerBusinessNameElem) footerBusinessNameElem.innerText = finalBusinessName;
+    const footerName1 = document.getElementById('footerBusinessName');
+    if(footerName1) footerName1.innerText = finalBusinessName;
     
-    const footerBizNameElem = document.getElementById('footerBizName');
-    if(footerBizNameElem) footerBizNameElem.innerText = finalBusinessName;
+    const footerName2 = document.getElementById('footerBizName');
+    if(footerName2) footerName2.innerText = finalBusinessName;
     
-    // Contact section mein phone
-    const contactPhoneElem = document.getElementById('contactPhone');
-    if(contactPhoneElem) contactPhoneElem.innerText = finalPhone;
+    const contactPhone = document.getElementById('contactPhone');
+    if(contactPhone) contactPhone.innerText = finalPhone;
     
-    const whatsappNumberElem = document.getElementById('whatsappNumber');
-    if(whatsappNumberElem) whatsappNumberElem.innerText = finalPhone;
+    const whatsappNumber = document.getElementById('whatsappNumber');
+    if(whatsappNumber) whatsappNumber.innerText = finalPhone;
     
-    // Browser tab ka title
+    const locationElem = document.getElementById('businessLocation');
+    if(locationElem) locationElem.innerText = finalLocation;
+    
     document.title = `${finalBusinessName} | Premium Beauty Parlor`;
 }
 
-// ========== HERO SLIDER CODE ==========
+// ========== HERO SLIDER ==========
 let currentSlide = 0;
 let slideInterval;
 const slider = document.getElementById('heroSlider');
@@ -228,6 +239,31 @@ function loadGallery() {
     }
 }
 
+// ========== LINK GENERATOR (Sirf Admin Mode Mein Kaam Karega) ==========
+function setupLinkGenerator() {
+    if(!isAdmin) return;
+    
+    const generateBtn = document.getElementById('generateLinkBtn');
+    if(generateBtn) {
+        generateBtn.addEventListener('click', function() {
+            let name = document.getElementById('genName').value;
+            let phone = document.getElementById('genPhone').value;
+            let location = document.getElementById('genLocation').value;
+            
+            if(name && phone) {
+                let baseUrl = window.location.href.split('?')[0];
+                let link = baseUrl + '?business=' + encodeURIComponent(name) + 
+                           '&phone=' + encodeURIComponent(phone) +
+                           '&location=' + encodeURIComponent(location || DEFAULT_CONFIG.location);
+                document.getElementById('generatedLinkOutput').innerHTML = 
+                    '<strong>✅ Customer ko ye link send karein:</strong><br><a href="'+link+'" target="_blank">'+link+'</a>';
+            } else {
+                alert('Please enter both business name and phone number');
+            }
+        });
+    }
+}
+
 // ========== MOBILE MENU ==========
 function initMobileMenu() {
     const toggleBtn = document.getElementById('menuToggle');
@@ -288,25 +324,7 @@ function initContactForm() {
     }
 }
 
-// ========== LINK GENERATOR (Aapke liye helper) ==========
-function setupLinkGenerator() {
-    const generateBtn = document.getElementById('generateLinkBtn');
-    if(generateBtn) {
-        generateBtn.addEventListener('click', function() {
-            let name = document.getElementById('genName').value;
-            let phone = document.getElementById('genPhone').value;
-            if(name && phone) {
-                let baseUrl = window.location.href.split('?')[0];
-                let link = baseUrl + '?business=' + encodeURIComponent(name) + '&phone=' + encodeURIComponent(phone);
-                document.getElementById('generatedLinkOutput').innerHTML = '<strong>✅ Customer ko ye link send karein:</strong><br><a href="'+link+'" target="_blank">'+link+'</a>';
-            } else {
-                alert('Please enter both business name and phone number');
-            }
-        });
-    }
-}
-
-// ========== SAB KUCH START KARO ==========
+// ========== INITIALIZE ==========
 function init() {
     updateBusinessInfo();
     createSlides();

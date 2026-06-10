@@ -9,7 +9,7 @@
     --primary-dark: #a07e35;
     --primary-light: #e6d5b8;
     --dark: #1a1a1a;
-    --light: #fef9f5;
+    --light: #ffffff;
     --gray: #6c6c6c;
     --white: #ffffff;
     --shadow: 0 20px 40px rgba(0,0,0,0.08);
@@ -30,11 +30,12 @@ body {
     padding: 0 24px;
 }
 
+/* Navbar */
 .navbar {
     position: fixed;
     top: 0;
     width: 100%;
-    background: rgba(255, 250, 247, 0.96);
+    background: rgba(255, 255, 255, 0.96);
     backdrop-filter: blur(10px);
     z-index: 1000;
     padding: 18px 0;
@@ -100,6 +101,7 @@ body {
     cursor: pointer;
 }
 
+/* Hero Slider */
 .hero {
     position: relative;
     height: 100vh;
@@ -129,6 +131,13 @@ body {
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
+}
+
+/* Mobile par image position fix */
+@media (max-width: 768px) {
+    .slide {
+        background-position: center 30%;
+    }
 }
 
 .slider-btn {
@@ -185,15 +194,18 @@ body {
     border-radius: 10px;
 }
 
+/* Hero Text at Bottom */
 .hero-text-bottom {
     position: absolute;
-    bottom: 80px;
+    bottom: 0;
     left: 0;
     width: 100%;
     z-index: 15;
-    padding: 0 20px;
+    padding: 0 20px 60px 20px;
     text-align: center;
     color: white;
+    background: linear-gradient(transparent, rgba(0,0,0,0.5));
+    border-radius: 0;
 }
 
 .hero-text-container {
@@ -408,6 +420,20 @@ section {
     font-family: inherit;
 }
 
+/* Admin Panel - Sirf Admin Dikhega */
+.admin-only {
+    display: none;
+    background: #1a1a1a;
+    padding: 30px 20px;
+    text-align: center;
+    border-top: 2px solid #c7a44b;
+    border-bottom: 2px solid #c7a44b;
+}
+
+body.admin-mode .admin-only {
+    display: block;
+}
+
 footer {
     background: var(--dark);
     color: white;
@@ -446,8 +472,11 @@ footer {
     color: var(--gray);
 }
 
+/* Mobile Responsive */
 @media (max-width: 768px) {
-    .menu-toggle { display: block; }
+    .menu-toggle {
+        display: block;
+    }
     
     .nav-links {
         display: none;
@@ -462,17 +491,33 @@ footer {
         box-shadow: var(--shadow);
     }
     
-    .nav-links.active { display: flex; }
+    .nav-links.active {
+        display: flex;
+    }
     
-    .hero-main-title { font-size: 2rem; }
+    .hero-main-title {
+        font-size: 2rem;
+    }
     
-    .hero-text-bottom { bottom: 40px; }
+    .hero-text-bottom {
+        padding: 0 15px 40px 15px;
+    }
     
-    .contact-wrapper { grid-template-columns: 1fr; }
+    .contact-wrapper {
+        grid-template-columns: 1fr;
+    }
     
-    .section-header h2 { font-size: 1.8rem; }
+    .section-header h2 {
+        font-size: 1.8rem;
+    }
     
-    .slider-btn { width: 35px; height: 35px; font-size: 0.8rem; }
+    .slider-btn {
+        width: 35px;
+        height: 35px;
+        font-size: 0.8rem;
+    }
     
-    .gallery-grid { grid-template-columns: repeat(2, 1fr); }
+    .gallery-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
 }
