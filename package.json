@@ -1,0 +1,12 @@
+{
+  "name": "beauty-parlor",
+  "version": "1.0.0",
+  "description": "Premium Beauty Parlor Website",
+  "main": "index.html",
+  "scripts": {
+    "dev": "http-server -o"
+  },
+  "devDependencies": {
+    "http-server": "^14.1.1"
+  }
+}
