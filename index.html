@@ -33,13 +33,15 @@
         </div>
     </nav>
 
-    <!-- ========== HERO SLIDER SECTION ========== -->
+    <!-- ========== HERO VIDEO SECTION ========== -->
     <section class="hero" id="home">
-        <div class="hero-slider-container">
-            <div class="hero-slider" id="heroSlider"></div>
-            <button class="slider-btn prev-btn" id="prevBtn"><i class="fas fa-chevron-left"></i></button>
-            <button class="slider-btn next-btn" id="nextBtn"><i class="fas fa-chevron-right"></i></button>
-            <div class="slider-dots" id="sliderDots"></div>
+        <div class="hero-video-container">
+            <video autoplay loop muted playsinline class="hero-video" id="heroVideo">
+                <source src="images/hero-section.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+            <!-- Fallback image agar video load na ho -->
+            <div class="hero-fallback" id="heroFallback"></div>
         </div>
         <div class="hero-text-bottom">
             <div class="hero-text-container">
@@ -125,21 +127,15 @@
         </div>
     </section>
 
-    <!-- ========== LINK GENERATOR - SIRF ADMIN KE LIYE (Customer nahi dekhega) ========== -->
+    <!-- ========== LINK GENERATOR - SIRF ADMIN KE LIYE ========== -->
     <div class="admin-only" id="adminPanel">
         <div style="max-width:600px; margin:0 auto;">
-            <h3 style="color:#c7a44b; margin-bottom:15px;">🔗 Customer Link Generator (Sirf Aapke Liye)</h3>
-            <p style="color:white; font-size:14px; margin-bottom:15px;">Yahan business name, phone aur location daalein, link generate karein</p>
-            
-            <input type="text" id="genName" placeholder="Business Name (e.g., Sania Parlor)" style="width:100%; padding:12px; margin-bottom:10px; border-radius:8px; border:none;">
-            
-            <input type="text" id="genPhone" placeholder="Phone Number (e.g., +92 300 1234567)" style="width:100%; padding:12px; margin-bottom:10px; border-radius:8px; border:none;">
-            
-            <input type="text" id="genLocation" placeholder="Location (e.g., DHA Phase 3, Lahore)" style="width:100%; padding:12px; margin-bottom:10px; border-radius:8px; border:none;">
-            
-            <button id="generateLinkBtn" style="background:#c7a44b; color:#1a1a1a; padding:12px 24px; border:none; border-radius:8px; cursor:pointer; font-weight:bold;">📎 Generate Customer Link</button>
-            
-            <div id="generatedLinkOutput" style="margin-top:20px; padding:15px; background:#2a2a2a; border-radius:8px; word-break:break-all; color:#c7a44b;"></div>
+            <h3 style="color:#c7a44b;">🔗 Customer Link Generator</h3>
+            <input type="text" id="genName" placeholder="Business Name" style="width:100%; padding:12px; margin:10px 0;">
+            <input type="text" id="genPhone" placeholder="Phone Number" style="width:100%; padding:12px; margin:10px 0;">
+            <input type="text" id="genLocation" placeholder="Location" style="width:100%; padding:12px; margin:10px 0;">
+            <button id="generateLinkBtn" style="background:#c7a44b; padding:12px 24px;">Generate Link</button>
+            <div id="generatedLinkOutput"></div>
         </div>
     </div>
 

@@ -5,13 +5,24 @@ const DEFAULT_CONFIG = {
     location: "Gulberg III, Lahore, Pakistan"
 };
 
-// ========== CHECK IF ADMIN MODE (Sirf aap dekh sakte ho) ==========
+// ========== CHECK IF ADMIN MODE ==========
 const urlParams = new URLSearchParams(window.location.search);
 const isAdmin = urlParams.get('admin') === '1';
 
-// Agar admin mode hai to body mein class add karo
 if(isAdmin) {
     document.body.classList.add('admin-mode');
+}
+
+// ========== VIDEO FALLBACK (Agar video na chale to) ==========
+const heroVideo = document.getElementById('heroVideo');
+const heroFallback = document.getElementById('heroFallback');
+
+if(heroVideo) {
+    heroVideo.addEventListener('error', function() {
+        heroFallback.style.display = 'block';
+        heroFallback.style.backgroundImage = "url('images/slide1.jpg')";
+        heroVideo.style.display = 'none';
+    });
 }
 
 // ========== URL SE PARAMETERS READ KARO ==========
@@ -29,7 +40,7 @@ const finalBusinessName = urlBusinessName ? decodeURIComponent(urlBusinessName) 
 const finalPhone = urlPhone ? decodeURIComponent(urlPhone) : DEFAULT_CONFIG.phone;
 const finalLocation = urlLocation ? decodeURIComponent(urlLocation) : DEFAULT_CONFIG.location;
 
-// ========== HERO SLIDER IMAGES ==========
+// ========== HERO SLIDER IMAGES (Fallback ke liye) ==========
 const heroImages = [
     "images/slide1.jpg",
     "images/slide2.jpg", 
@@ -76,7 +87,7 @@ const galleryImages = [
     "images/image12.jpg", "images/image.jpg", "images/image1.jpg", "images/image2.jpg"
 ];
 
-// ========== UPDATE BUSINESS INFO (Name, Phone, Location) ==========
+// ========== UPDATE BUSINESS INFO ==========
 function updateBusinessInfo() {
     const nameElem = document.getElementById('businessName');
     if(nameElem) nameElem.innerText = finalBusinessName;
@@ -97,72 +108,6 @@ function updateBusinessInfo() {
     if(locationElem) locationElem.innerText = finalLocation;
     
     document.title = `${finalBusinessName} | Premium Beauty Parlor`;
-}
-
-// ========== HERO SLIDER ==========
-let currentSlide = 0;
-let slideInterval;
-const slider = document.getElementById('heroSlider');
-const dotsContainer = document.getElementById('sliderDots');
-let totalSlides = heroImages.length;
-
-function createSlides() {
-    if(!slider) return;
-    slider.innerHTML = '';
-    heroImages.forEach((img) => {
-        const slide = document.createElement('div');
-        slide.className = 'slide';
-        slide.style.backgroundImage = `url('${img}')`;
-        slide.style.backgroundSize = 'cover';
-        slide.style.backgroundPosition = 'center';
-        slider.appendChild(slide);
-    });
-}
-
-function createDots() {
-    if(!dotsContainer) return;
-    dotsContainer.innerHTML = '';
-    for(let i = 0; i < totalSlides; i++) {
-        const dot = document.createElement('div');
-        dot.className = 'dot';
-        if(i === currentSlide) dot.classList.add('active');
-        dot.addEventListener('click', () => goToSlide(i));
-        dotsContainer.appendChild(dot);
-    }
-}
-
-function updateDots() {
-    document.querySelectorAll('.dot').forEach((dot, i) => {
-        dot.classList.toggle('active', i === currentSlide);
-    });
-}
-
-function goToSlide(index) {
-    currentSlide = index;
-    if(slider) slider.style.transform = `translateX(-${currentSlide * 100}%)`;
-    updateDots();
-    resetInterval();
-}
-
-function nextSlide() {
-    currentSlide = (currentSlide + 1) % totalSlides;
-    goToSlide(currentSlide);
-}
-
-function prevSlide() {
-    currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
-    goToSlide(currentSlide);
-}
-
-function startAutoSlide() {
-    slideInterval = setInterval(() => {
-        nextSlide();
-    }, 4000);
-}
-
-function resetInterval() {
-    clearInterval(slideInterval);
-    startAutoSlide();
 }
 
 // ========== LOAD SERVICES ==========
@@ -239,7 +184,7 @@ function loadGallery() {
     }
 }
 
-// ========== LINK GENERATOR (Sirf Admin Mode Mein Kaam Karega) ==========
+// ========== LINK GENERATOR ==========
 function setupLinkGenerator() {
     if(!isAdmin) return;
     
@@ -327,27 +272,15 @@ function initContactForm() {
 // ========== INITIALIZE ==========
 function init() {
     updateBusinessInfo();
-    createSlides();
-    createDots();
     loadServices();
     loadMakeupServices();
     loadHairServices();
     loadGallery();
-    startAutoSlide();
     initMobileMenu();
     initSmoothScroll();
     initActiveNav();
     initContactForm();
     setupLinkGenerator();
-    
-    const prevBtn = document.getElementById('prevBtn');
-    const nextBtn = document.getElementById('nextBtn');
-    if(prevBtn) prevBtn.addEventListener('click', prevSlide);
-    if(nextBtn) nextBtn.addEventListener('click', nextSlide);
-    
-    window.addEventListener('resize', () => {
-        goToSlide(currentSlide);
-    });
 }
 
 document.addEventListener('DOMContentLoaded', init);
