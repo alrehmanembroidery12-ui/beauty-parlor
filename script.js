@@ -184,24 +184,50 @@ function loadGallery() {
     }
 }
 
-// ========== LINK GENERATOR ==========
+// ========== LINK GENERATOR WITH SHORT URL (TinyURL) ==========
+async function shortenURL(longUrl) {
+    try {
+        const response = await fetch('https://tinyurl.com/api-create.php?url=' + encodeURIComponent(longUrl));
+        if (response.ok) {
+            const shortUrl = await response.text();
+            return shortUrl;
+        } else {
+            return longUrl;
+        }
+    } catch (error) {
+        console.error('Short URL error:', error);
+        return longUrl;
+    }
+}
+
 function setupLinkGenerator() {
     if(!isAdmin) return;
     
     const generateBtn = document.getElementById('generateLinkBtn');
+    const outputDiv = document.getElementById('generatedLinkOutput');
+    
     if(generateBtn) {
-        generateBtn.addEventListener('click', function() {
+        generateBtn.addEventListener('click', async function() {
             let name = document.getElementById('genName').value;
             let phone = document.getElementById('genPhone').value;
             let location = document.getElementById('genLocation').value;
             
             if(name && phone) {
+                outputDiv.innerHTML = '<span style="color:#c7a44b;">⏳ Generating short link...</span>';
+                
                 let baseUrl = window.location.href.split('?')[0];
-                let link = baseUrl + '?business=' + encodeURIComponent(name) + 
+                let longLink = baseUrl + '?business=' + encodeURIComponent(name) + 
                            '&phone=' + encodeURIComponent(phone) +
                            '&location=' + encodeURIComponent(location || DEFAULT_CONFIG.location);
-                document.getElementById('generatedLinkOutput').innerHTML = 
-                    '<strong>✅ Customer ko ye link send karein:</strong><br><a href="'+link+'" target="_blank">'+link+'</a>';
+                
+                const shortLink = await shortenURL(longLink);
+                
+                outputDiv.innerHTML = `
+                    <strong>✅ Short Link (Customer ko ye bhejein):</strong><br>
+                    <a href="${shortLink}" target="_blank" style="color:#c7a44b; word-break:break-all;">${shortLink}</a>
+                    <br><br>
+                    <span style="font-size:12px; color:#888;">🔗 Original Link (backup): <a href="${longLink}" target="_blank" style="color:#888;">Click here</a></span>
+                `;
             } else {
                 alert('Please enter both business name and phone number');
             }
