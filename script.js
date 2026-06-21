@@ -110,14 +110,42 @@ function updateBusinessInfo() {
     document.title = `${finalBusinessName} | Premium Beauty Parlor`;
 }
 
-// ========== DYNAMIC OG IMAGE GENERATOR ==========
-function generateOGImage(businessName) {
+// ========== GENERATE OG IMAGE AS PUBLIC URL (ImgBB API) ==========
+const IMGBB_API_KEY = 'dde693f6b934016e72a90ed6b41e3f14';
+
+async function uploadImageToImgBB(imageDataUrl) {
     try {
+        const formData = new FormData();
+        formData.append('key', IMGBB_API_KEY);
+        formData.append('image', imageDataUrl);
+        
+        const response = await fetch('https://api.imgbb.com/1/upload', {
+            method: 'POST',
+            body: formData
+        });
+        
+        const result = await response.json();
+        if (result.success) {
+            return result.data.url;
+        } else {
+            console.error('ImgBB upload failed:', result);
+            return null;
+        }
+    } catch (error) {
+        console.error('Upload error:', error);
+        return null;
+    }
+}
+
+async function updateOGImageWithPublicURL() {
+    try {
+        const businessName = finalBusinessName || DEFAULT_CONFIG.name;
         const canvas = document.createElement('canvas');
         canvas.width = 1200;
         canvas.height = 630;
         const ctx = canvas.getContext('2d');
 
+        // Draw image on canvas
         const gradient = ctx.createLinearGradient(0, 0, 1200, 630);
         gradient.addColorStop(0, '#1a1a1a');
         gradient.addColorStop(0.5, '#c7a44b');
@@ -141,11 +169,8 @@ function generateOGImage(businessName) {
 
         ctx.fillStyle = '#c7a44b';
         let fontSize = 72;
-        if (businessName.length > 20) {
-            fontSize = 48;
-        } else if (businessName.length > 15) {
-            fontSize = 56;
-        }
+        if (businessName.length > 20) fontSize = 48;
+        else if (businessName.length > 15) fontSize = 56;
         ctx.font = `bold ${fontSize}px Playfair Display, serif`;
         ctx.fillText(businessName || 'Your Parlor', 600, 380);
 
@@ -157,44 +182,24 @@ function generateOGImage(businessName) {
         ctx.font = '18px Poppins, sans-serif';
         ctx.fillText('Visit our website for more details', 600, 560);
 
-        return canvas.toDataURL('image/jpeg', 0.9);
-    } catch (error) {
-        console.error('❌ Error generating OG image:', error);
-        return '';
-    }
-}
-
-// ========== UPDATE OG IMAGE ==========
-function updateOGImage() {
-    try {
-        const businessName = finalBusinessName || DEFAULT_CONFIG.name;
-        const ogImage = generateOGImage(businessName);
+        const imageDataUrl = canvas.toDataURL('image/jpeg', 0.9);
         
-        let ogMeta = document.querySelector('meta[property="og:image"]');
-        if (!ogMeta) {
-            ogMeta = document.createElement('meta');
-            ogMeta.setAttribute('property', 'og:image');
-            document.head.appendChild(ogMeta);
+        // Upload to ImgBB
+        const publicUrl = await uploadImageToImgBB(imageDataUrl);
+        
+        if (publicUrl) {
+            // Update meta tags with public URL
+            const ogMeta = document.querySelector('meta[property="og:image"]');
+            if (ogMeta) ogMeta.content = publicUrl;
+            
+            const twitterMeta = document.querySelector('meta[name="twitter:image"]');
+            if (twitterMeta) twitterMeta.content = publicUrl;
+            
+            const ogTitle = document.querySelector('meta[property="og:title"]');
+            if (ogTitle) ogTitle.content = `Premium Beauty Parlor - ${businessName}`;
+            
+            console.log('✅ OG Image uploaded to:', publicUrl);
         }
-        ogMeta.content = ogImage;
-        
-        let twitterMeta = document.querySelector('meta[name="twitter:image"]');
-        if (!twitterMeta) {
-            twitterMeta = document.createElement('meta');
-            twitterMeta.setAttribute('name', 'twitter:image');
-            document.head.appendChild(twitterMeta);
-        }
-        twitterMeta.content = ogImage;
-        
-        let ogTitle = document.querySelector('meta[property="og:title"]');
-        if (!ogTitle) {
-            ogTitle = document.createElement('meta');
-            ogTitle.setAttribute('property', 'og:title');
-            document.head.appendChild(ogTitle);
-        }
-        ogTitle.content = `Premium Beauty Parlor - ${businessName}`;
-        
-        console.log('✅ OG Image updated for:', businessName);
     } catch (error) {
         console.error('❌ Error updating OG image:', error);
     }
@@ -369,8 +374,8 @@ function init() {
     updateBusinessInfo();
     
     setTimeout(function() {
-        updateOGImage();
-        console.log('✅ OG Image updated');
+        updateOGImageWithPublicURL();
+        console.log('✅ OG Image updated with public URL');
     }, 500);
     
     loadServices();
