@@ -13,7 +13,7 @@ if(isAdmin) {
     document.body.classList.add('admin-mode');
 }
 
-// ========== VIDEO FALLBACK (Agar video na chale to) ==========
+// ========== VIDEO FALLBACK ==========
 const heroVideo = document.getElementById('heroVideo');
 const heroFallback = document.getElementById('heroFallback');
 
@@ -40,7 +40,7 @@ const finalBusinessName = urlBusinessName ? decodeURIComponent(urlBusinessName) 
 const finalPhone = urlPhone ? decodeURIComponent(urlPhone) : DEFAULT_CONFIG.phone;
 const finalLocation = urlLocation ? decodeURIComponent(urlLocation) : DEFAULT_CONFIG.location;
 
-// ========== HERO SLIDER IMAGES (Fallback ke liye) ==========
+// ========== HERO SLIDER IMAGES (Fallback) ==========
 const heroImages = [
     "images/slide1.jpg",
     "images/slide2.jpg", 
@@ -110,79 +110,93 @@ function updateBusinessInfo() {
     document.title = `${finalBusinessName} | Premium Beauty Parlor`;
 }
 
-// ========== DYNAMIC OG IMAGE GENERATOR (Customer Name Ke Saath) ==========
+// ========== DYNAMIC OG IMAGE GENERATOR ==========
 function generateOGImage(businessName) {
-    // Canvas create karein
-    const canvas = document.createElement('canvas');
-    canvas.width = 1200;
-    canvas.height = 630;
-    const ctx = canvas.getContext('2d');
+    try {
+        const canvas = document.createElement('canvas');
+        canvas.width = 1200;
+        canvas.height = 630;
+        const ctx = canvas.getContext('2d');
 
-    // Background gradient (luxury feel)
-    const gradient = ctx.createLinearGradient(0, 0, 1200, 630);
-    gradient.addColorStop(0, '#1a1a1a');
-    gradient.addColorStop(0.5, '#c7a44b');
-    gradient.addColorStop(1, '#1a1a1a');
-    ctx.fillStyle = gradient;
-    ctx.fillRect(0, 0, 1200, 630);
+        const gradient = ctx.createLinearGradient(0, 0, 1200, 630);
+        gradient.addColorStop(0, '#1a1a1a');
+        gradient.addColorStop(0.5, '#c7a44b');
+        gradient.addColorStop(1, '#1a1a1a');
+        ctx.fillStyle = gradient;
+        ctx.fillRect(0, 0, 1200, 630);
 
-    // Decorative line
-    ctx.beginPath();
-    ctx.moveTo(100, 300);
-    ctx.lineTo(1100, 300);
-    ctx.strokeStyle = '#c7a44b';
-    ctx.lineWidth = 3;
-    ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(100, 300);
+        ctx.lineTo(1100, 300);
+        ctx.strokeStyle = '#c7a44b';
+        ctx.lineWidth = 3;
+        ctx.stroke();
 
-    // Main Title
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    
-    // "Beauty Parlor" text
-    ctx.fillStyle = '#ffffff';
-    ctx.font = 'bold 48px Playfair Display, serif';
-    ctx.fillText('✨ Beauty Parlor ✨', 600, 200);
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        
+        ctx.fillStyle = '#ffffff';
+        ctx.font = 'bold 48px Playfair Display, serif';
+        ctx.fillText('✨ Beauty Parlor ✨', 600, 200);
 
-    // Customer Business Name (Dynamic)
-    ctx.fillStyle = '#c7a44b';
-    ctx.font = 'bold 72px Playfair Display, serif';
-    ctx.fillText(businessName || 'Your Parlor', 600, 380);
+        ctx.fillStyle = '#c7a44b';
+        let fontSize = 72;
+        if (businessName.length > 20) {
+            fontSize = 48;
+        } else if (businessName.length > 15) {
+            fontSize = 56;
+        }
+        ctx.font = `bold ${fontSize}px Playfair Display, serif`;
+        ctx.fillText(businessName || 'Your Parlor', 600, 380);
 
-    // Subtitle
-    ctx.fillStyle = '#aaaaaa';
-    ctx.font = '24px Poppins, sans-serif';
-    ctx.fillText('Premium Beauty Services • Book Your Appointment Today', 600, 480);
+        ctx.fillStyle = '#aaaaaa';
+        ctx.font = '24px Poppins, sans-serif';
+        ctx.fillText('Premium Beauty Services • Book Your Appointment Today', 600, 480);
 
-    // Small footer
-    ctx.fillStyle = '#666666';
-    ctx.font = '18px Poppins, sans-serif';
-    ctx.fillText('Visit our website for more details', 600, 560);
+        ctx.fillStyle = '#666666';
+        ctx.font = '18px Poppins, sans-serif';
+        ctx.fillText('Visit our website for more details', 600, 560);
 
-    // Convert to image URL
-    return canvas.toDataURL('image/jpeg', 0.9);
+        return canvas.toDataURL('image/jpeg', 0.9);
+    } catch (error) {
+        console.error('❌ Error generating OG image:', error);
+        return '';
+    }
 }
 
-// ========== UPDATE OG IMAGE WHEN BUSINESS NAME CHANGES ==========
+// ========== UPDATE OG IMAGE ==========
 function updateOGImage() {
-    const businessName = finalBusinessName || DEFAULT_CONFIG.name;
-    const ogImage = generateOGImage(businessName);
-    
-    // Update meta tag
-    const ogMeta = document.querySelector('meta[property="og:image"]');
-    if (ogMeta) {
+    try {
+        const businessName = finalBusinessName || DEFAULT_CONFIG.name;
+        const ogImage = generateOGImage(businessName);
+        
+        let ogMeta = document.querySelector('meta[property="og:image"]');
+        if (!ogMeta) {
+            ogMeta = document.createElement('meta');
+            ogMeta.setAttribute('property', 'og:image');
+            document.head.appendChild(ogMeta);
+        }
         ogMeta.content = ogImage;
-    }
-    
-    // Twitter card ke liye bhi
-    const twitterMeta = document.querySelector('meta[name="twitter:image"]');
-    if (twitterMeta) {
+        
+        let twitterMeta = document.querySelector('meta[name="twitter:image"]');
+        if (!twitterMeta) {
+            twitterMeta = document.createElement('meta');
+            twitterMeta.setAttribute('name', 'twitter:image');
+            document.head.appendChild(twitterMeta);
+        }
         twitterMeta.content = ogImage;
-    }
-    
-    // OG Title bhi dynamic karein
-    const ogTitle = document.querySelector('meta[property="og:title"]');
-    if (ogTitle) {
+        
+        let ogTitle = document.querySelector('meta[property="og:title"]');
+        if (!ogTitle) {
+            ogTitle = document.createElement('meta');
+            ogTitle.setAttribute('property', 'og:title');
+            document.head.appendChild(ogTitle);
+        }
         ogTitle.content = `Premium Beauty Parlor - ${businessName}`;
+        
+        console.log('✅ OG Image updated for:', businessName);
+    } catch (error) {
+        console.error('❌ Error updating OG image:', error);
     }
 }
 
@@ -260,7 +274,7 @@ function loadGallery() {
     }
 }
 
-// ========== LINK GENERATOR (Direct Link Only - No Short URL) ==========
+// ========== LINK GENERATOR ==========
 function setupLinkGenerator() {
     if(!isAdmin) return;
     
@@ -353,7 +367,12 @@ function initContactForm() {
 // ========== INITIALIZE ==========
 function init() {
     updateBusinessInfo();
-    updateOGImage();  // 👈 YEH NAYI LINE - WhatsApp preview image generate karegi
+    
+    setTimeout(function() {
+        updateOGImage();
+        console.log('✅ OG Image updated');
+    }, 500);
+    
     loadServices();
     loadMakeupServices();
     loadHairServices();
