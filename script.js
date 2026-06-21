@@ -110,6 +110,82 @@ function updateBusinessInfo() {
     document.title = `${finalBusinessName} | Premium Beauty Parlor`;
 }
 
+// ========== DYNAMIC OG IMAGE GENERATOR (Customer Name Ke Saath) ==========
+function generateOGImage(businessName) {
+    // Canvas create karein
+    const canvas = document.createElement('canvas');
+    canvas.width = 1200;
+    canvas.height = 630;
+    const ctx = canvas.getContext('2d');
+
+    // Background gradient (luxury feel)
+    const gradient = ctx.createLinearGradient(0, 0, 1200, 630);
+    gradient.addColorStop(0, '#1a1a1a');
+    gradient.addColorStop(0.5, '#c7a44b');
+    gradient.addColorStop(1, '#1a1a1a');
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, 1200, 630);
+
+    // Decorative line
+    ctx.beginPath();
+    ctx.moveTo(100, 300);
+    ctx.lineTo(1100, 300);
+    ctx.strokeStyle = '#c7a44b';
+    ctx.lineWidth = 3;
+    ctx.stroke();
+
+    // Main Title
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    
+    // "Beauty Parlor" text
+    ctx.fillStyle = '#ffffff';
+    ctx.font = 'bold 48px Playfair Display, serif';
+    ctx.fillText('✨ Beauty Parlor ✨', 600, 200);
+
+    // Customer Business Name (Dynamic)
+    ctx.fillStyle = '#c7a44b';
+    ctx.font = 'bold 72px Playfair Display, serif';
+    ctx.fillText(businessName || 'Your Parlor', 600, 380);
+
+    // Subtitle
+    ctx.fillStyle = '#aaaaaa';
+    ctx.font = '24px Poppins, sans-serif';
+    ctx.fillText('Premium Beauty Services • Book Your Appointment Today', 600, 480);
+
+    // Small footer
+    ctx.fillStyle = '#666666';
+    ctx.font = '18px Poppins, sans-serif';
+    ctx.fillText('Visit our website for more details', 600, 560);
+
+    // Convert to image URL
+    return canvas.toDataURL('image/jpeg', 0.9);
+}
+
+// ========== UPDATE OG IMAGE WHEN BUSINESS NAME CHANGES ==========
+function updateOGImage() {
+    const businessName = finalBusinessName || DEFAULT_CONFIG.name;
+    const ogImage = generateOGImage(businessName);
+    
+    // Update meta tag
+    const ogMeta = document.querySelector('meta[property="og:image"]');
+    if (ogMeta) {
+        ogMeta.content = ogImage;
+    }
+    
+    // Twitter card ke liye bhi
+    const twitterMeta = document.querySelector('meta[name="twitter:image"]');
+    if (twitterMeta) {
+        twitterMeta.content = ogImage;
+    }
+    
+    // OG Title bhi dynamic karein
+    const ogTitle = document.querySelector('meta[property="og:title"]');
+    if (ogTitle) {
+        ogTitle.content = `Premium Beauty Parlor - ${businessName}`;
+    }
+}
+
 // ========== LOAD SERVICES ==========
 function loadServices() {
     const container = document.getElementById('servicesGrid');
@@ -277,6 +353,7 @@ function initContactForm() {
 // ========== INITIALIZE ==========
 function init() {
     updateBusinessInfo();
+    updateOGImage();  // 👈 YEH NAYI LINE - WhatsApp preview image generate karegi
     loadServices();
     loadMakeupServices();
     loadHairServices();
